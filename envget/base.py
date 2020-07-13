@@ -1,6 +1,7 @@
 """All logic lie here.
 """
 from __future__ import annotations
+import os
 import uuid
 import typing
 import decimal
@@ -9,13 +10,11 @@ import functools
 
 
 GenericTypes: typing.Union = typing.Union[str, int, bool, float, decimal.Decimal, pathlib.Path, uuid.UUID]
-GenericList: typing.Union = typing.Union[GenericTypes, list[GenericTypes], tuple[GenericTypes], dict[str, GenericTypes]]
+GenericList: typing.Union = typing.Union[
+    GenericTypes, typing.List[GenericTypes], typing.Tuple[GenericTypes], typing.Dict[str, GenericTypes], None
+]
 CURRENT_DIR: pathlib.Path = pathlib.Path().cwd().resolve()
-FETCHERS: dict = {
-    "env": fetcher_os_getenv,
-    "osenv": fetcher_os_getenv,
-    "envfile": fetcher_envfile,
-}
+FETCHERS: dict = {}
 
 
 def fetcher_os_getenv(var_name: str) -> typing.Optional[str]:
@@ -46,28 +45,47 @@ def make_env_parser(type_of_fetcher: str = "env") -> typing.Callable:
     return functools.partial(parse_env, env_fetcher=FETCHERS[type_of_fetcher])
 
 
+def caster_for_type(type_cast: type, value: str) -> typing.Optional[GenericTypes]:
+    """Wrapper for type casting.
+    """
+    if type_cast == bool:
+        if value.lower() in ("1", "yes", "true", "ok"):
+            return True
+        else:
+            return False
+    else:
+        return type_cast(value)
+
+
 def parse_env(
     var_name: str,
-    default_value: str = "",
+    default_value: GenericTypes = "",
     type_cast: type = str,
     list_type_cast: type = str,
     env_fetcher: typing.Callable = lambda: None,
 ) -> GenericList:
     """Main function.
     """
-    result_value: str
+    result_value: typing.Optional[GenericTypes]
     try:
-        result_value = type_cast(env_fetcher(var_name))
+        result_value = env_fetcher(var_name)
+        if not result_value:
+            result_value = default_value
     except TypeError:
         result_value = default_value
     if type_cast in [list, tuple]:
         array_values: list = []
-        for one_item in result.value("," if "," in result_value else " "):
-            array_values.append(list_type_cast(one_item))
+        for one_item in result_value.split("," if "," in result_value else " "):
+            array_values.append(caster_for_type(list_type_cast, one_item))
         return array_values
     else:
-        return type_cast(env_fetcher(var_name))
+        return caster_for_type(type_cast, result_value) if result_value else None
 
 
+FETCHERS = {
+    "env": fetcher_os_getenv,
+    "osenv": fetcher_os_getenv,
+    "envfile": fetcher_envfile,
+}
 env: typing.Callable = make_env_parser("osenv")
 envfile: typing.Callable = make_env_parser("envfile")
