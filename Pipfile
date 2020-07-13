@@ -7,6 +7,9 @@ verify_ssl = true
 
 [packages]
 pytest = "*"
+pytest-cov = "*"
+mypy = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.8"
