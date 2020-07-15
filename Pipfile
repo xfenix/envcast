@@ -10,6 +10,7 @@ pytest = "*"
 pytest-cov = "*"
 mypy = "*"
 pylint = "*"
+faker = "*"
 
 [requires]
 python_version = "3.8"
