@@ -9,66 +9,63 @@ import pathlib
 import functools
 
 
-GenericTypes: typing.Union = typing.Union[str, int, bool, float, decimal.Decimal, pathlib.Path, uuid.UUID]
-GenericList: typing.Union = typing.Union[
-    GenericTypes, typing.List[GenericTypes], typing.Tuple[GenericTypes], typing.Dict[str, GenericTypes], None
-]
 CURRENT_DIR: pathlib.Path = pathlib.Path().cwd().resolve()
-FETCHERS: dict = {}
+BOOLEAN_VALUES: tuple[str] = ("1", "y", "yes", "true", "ok", "on")
 
 
-def fetcher_os_getenv(var_name: str) -> typing.Optional[str]:
+def getenv_provider(var_name: str) -> typing.Any:
     """Fetch value from environ.
     """
     return os.getenv(var_name)
 
 
-def fetcher_envfile(var_name: str) -> typing.Optional[str]:
+def dotenv_provider(var_name: str) -> typing.Any:
     """Fetch value from environ.
     """
-    var_name_l: str = var_name.lower()
     data_provider: dict
-    if hasattr(fetcher_envfile, "__cache__"):
-        data_provider = fetcher_envfile.__cache__
+    if hasattr(dotenv_provider, "__cache__"):
+        data_provider = dotenv_provider.__cache__
     else:
+        data_provider = {}
         env_file: pathlib.Path = CURRENT_DIR.joinpath(".env")
-        statements: list = env_file.read_text().split("\n")
+        statements: list = env_file.read_text().strip().split("\n")
         for one_row in statements:
+            if not one_row:
+                continue
             exp_parts: list = one_row.split("=")
-            data_provider[exp_parts[0].lower().replace("export", "").trim()] = exp_parts[1]
-    return data_provider[var_name_l] if var_name_l in data_provider else None
+            data_provider[exp_parts[0].lower().replace("export", "").strip()] = exp_parts[1]
+        dotenv_provider.__cache__ = data_provider
+    return data_provider.get(var_name)
 
 
-def make_env_parser(type_of_fetcher: str = "env") -> typing.Callable:
+def make_env_parser(fetcher_fn: typing.Callable) -> typing.Callable:
     """Create env parser instance.
     """
-    return functools.partial(parse_env, env_fetcher=FETCHERS[type_of_fetcher])
+    return functools.partial(parse_and_cast_var, fetch_value_from_env=fetcher_fn)
 
 
-def caster_for_type(type_cast: type, value: str) -> typing.Optional[GenericTypes]:
+def cast_value_to_exact_type(type_cast: type, value: str) -> typing.Any:
     """Wrapper for type casting.
     """
     if type_cast == bool:
-        if value.lower() in ("1", "yes", "true", "ok"):
-            return True
-        else:
-            return False
+        return value.lower() in BOOLEAN_VALUES
     else:
         return type_cast(value)
 
 
-def parse_env(
+def parse_and_cast_var(
     var_name: str,
-    default_value: GenericTypes = "",
+    default_value: typing.Any = "",
     type_cast: type = str,
     list_type_cast: type = str,
-    env_fetcher: typing.Callable = lambda: None,
-) -> GenericList:
+    fetch_value_from_env: typing.Callable = lambda: None,
+) -> typing.Any:
     """Main function.
     """
-    result_value: typing.Optional[GenericTypes]
+    result_value: typing.Any
     try:
-        result_value = env_fetcher(var_name)
+        result_value = fetch_value_from_env(var_name.lower().strip())
+        print(result_value)
         if not result_value:
             result_value = default_value
     except TypeError:
@@ -76,16 +73,11 @@ def parse_env(
     if type_cast in [list, tuple]:
         array_values: list = []
         for one_item in result_value.split("," if "," in result_value else " "):
-            array_values.append(caster_for_type(list_type_cast, one_item))
+            array_values.append(cast_value_to_exact_type(list_type_cast, one_item))
         return array_values
     else:
-        return caster_for_type(type_cast, result_value) if result_value else None
+        return cast_value_to_exact_type(type_cast, result_value) if result_value else None
 
 
-FETCHERS = {
-    "env": fetcher_os_getenv,
-    "osenv": fetcher_os_getenv,
-    "envfile": fetcher_envfile,
-}
-env: typing.Callable = make_env_parser("osenv")
-envfile: typing.Callable = make_env_parser("envfile")
+env: typing.Callable = make_env_parser(getenv_provider)
+dotenv: typing.Callable = make_env_parser(dotenv_provider)
