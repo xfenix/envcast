@@ -11,6 +11,7 @@ pytest-cov = "*"
 mypy = "*"
 pylint = "*"
 faker = "*"
+flit = "*"
 
 [requires]
 python_version = "3.8"
