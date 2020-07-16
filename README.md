@@ -32,4 +32,4 @@ this_will_be_bool: bool = envget.dotenv('SOME_ENV_VARIABLE', 'false', cast=bool)
 or_this_is_string_by_default: str = envget.dotenv('OTHER_ENV_VAR')
 this_is_int: int = envget.dotenv('MORE_ENV', cast=int)
 ```
-Dont worry, file readed and parsed only once.
+Dont worry, file will be readed and parsed only once.
