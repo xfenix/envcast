@@ -8,9 +8,22 @@ import decimal
 import pathlib
 import functools
 
+from . import exceptions
 
-CURRENT_DIR: pathlib.Path = pathlib.Path().cwd().resolve()
+
+DOTENV_FILE_NAME: str = ".env"
+DOTENV_PATH: pathlib.Path
 BOOLEAN_VALUES: tuple[str] = ("1", "y", "yes", "true", "ok", "on")
+
+
+def set_dotenv_path(full_path: typing.Union[str, pathlib.Path]) -> None:
+    """Dotenv path helper.
+    """
+    DOTENV_PATH = pathlib.Path(full_path).resolve()
+    if DOTENV_PATH.is_dir():
+        DOTENV_PATH = DOTENV_PATH.joinpath(DOTENV_FILE_NAME)
+    if not DOTENV_PATH.is_file() or not DOTENV_PATH.exists():
+        raise exceptions.IncorrectDotenvPath(str(DOTENV_PATH))
 
 
 def getenv_provider(var_name: str) -> typing.Any:
@@ -27,8 +40,10 @@ def dotenv_provider(var_name: str) -> typing.Any:
         data_provider = dotenv_provider.__cache__
     else:
         data_provider = {}
-        env_file: pathlib.Path = CURRENT_DIR.joinpath(".env")
-        statements: list = env_file.read_text().strip().split("\n")
+        try:
+            statements: list = DOTENV_PATH.read_text().strip().split("\n")
+        except NameError:
+            raise exceptions.NotSettedDotenvPath(DOTENV_PATH)
         for one_row in statements:
             if not one_row:
                 continue
@@ -65,7 +80,7 @@ def parse_and_cast_var(
     result_value: typing.Any
     try:
         result_value = fetch_value_from_env(var_name.lower().strip())
-        print(result_value)
+        breakpoint()
         if not result_value:
             result_value = default_value
     except TypeError:
