@@ -1,6 +1,6 @@
 """Just helper.
 """
-from .base import env, dotenv, set_dotenv_path
+from .base import env, dotenv
 
 
 __version__: str = "1.0.0"
