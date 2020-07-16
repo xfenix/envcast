@@ -13,7 +13,7 @@ Written in modern python 3.7+ with full support of:
 Usage examples
 ===
 For casting good old plain env variables you will need do following:
-```
+```python
 import envget
 
 
@@ -24,7 +24,7 @@ this_is_int: int = envget.env('MORE_ENV', cast=int)
 
 
 If your are using .env file, you can do it too:
-```
+```python
 import envget
 
 
