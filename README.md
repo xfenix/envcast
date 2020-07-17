@@ -16,7 +16,6 @@ Written in modern python 3.7+ with full support of:
 
 Usage examples
 ===
-
 ### API
 Signature of env and dotenv absolutely similar and looks like this:
 ```python
@@ -38,7 +37,6 @@ or_this_is_string_by_default: str = envcast.env('OTHER_ENV_VAR')
 this_is_int: int = envcast.env('MORE_ENV', type_cast=int)
 ```
 
-
 ### From .env file
 If your are using .env file, you can do it too:
 ```python
@@ -55,3 +53,8 @@ or_this_is_string_by_default: str = envcast.dotenv('OTHER_ENV_VAR')
 this_is_int: int = envcast.dotenv('MORE_ENV', type_cast=int)
 ```
 Dont worry, file will be readed and parsed only once.
+
+
+Changelog
+===
+You can check https://github.com/xfenix/envcast/releases/ release page.
