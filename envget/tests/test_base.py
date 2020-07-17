@@ -11,7 +11,6 @@ import pytest
 import faker
 
 import envget
-import envget.base
 
 
 FAKE_GEN: faker.Faker = faker.Faker()
@@ -36,7 +35,7 @@ def test_parse_osgetenv_good_and_bad(monkeypatch, desired_type, key_exists) -> N
     tested_value: typing.Any = envget.env(env_key if key_exists else FAKE_GEN.pystr(), type_cast=desired_type)
     if key_exists:
         if desired_type == bool:
-            assert tested_value == bool(original_value.lower().strip() in envget.base.BOOLEAN_VALUES)
+            assert tested_value == bool(original_value.lower().strip() in envget.env.BOOLEAN_VALUES)
         else:
             assert tested_value == original_value
     else:
@@ -56,6 +55,6 @@ def test_parse_dotenv_good_and_bad(monkeypatch, desired_type, key_exists) -> Non
     envget.dotenv.set_dotenv_path(".")
     tested_value: typing.Any = envget.dotenv(env_key, type_cast=desired_type)
     if desired_type == bool:
-        assert tested_value == bool(original_value.lower().strip() in envget.BOOLEAN_VALUES)
+        assert tested_value == bool(original_value.lower().strip() in envget.dotenv.BOOLEAN_VALUES)
     else:
         assert tested_value == original_value
