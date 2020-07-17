@@ -24,11 +24,9 @@ jobs:
       run: |
         pip install pipenv
         pipenv install
-    # - name: Install package and check installed middle is working
-    #   run: |
-    #     pipenv run flit install
-    #     DJANGO_SETTINGS_MODULE=fake_django.settings pipenv run pytest django-for-development
-    #     pipenv run pip uninstall evnget
+    - name: Install package and check installation process is ok
+      run: |
+        pipenv run flit install
     - name: Run tests
       run: |
         pipenv run pytest -n2 evnget --cov=./ --cov-report=xml
@@ -38,22 +36,22 @@ jobs:
         name: coverage.xml
         path: ./coverage.xml
 
-#   upload-codecov:
-#     runs-on: ubuntu-latest
-#     needs: run-tests-and-coverage
-#     steps:
-#     - uses: actions/download-artifact@v2
-#       with:
-#         name: coverage.xml
-#     - name: Upload coverage to Codecov
-#       uses: codecov/codecov-action@v1
-#       with:
-#         token: ${{ secrets.CODECOV_TOKEN }}
-#         file: ./coverage.xml
-#         flags: unittests
-#         env_vars: OS,PYTHON
-#         name: codecov-umbrella
-#         fail_ci_if_error: true
+  upload-codecov:
+    runs-on: ubuntu-latest
+    needs: run-tests-and-coverage
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: coverage.xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: unittests
+        env_vars: OS,PYTHON
+        name: codecov-umbrella
+        fail_ci_if_error: true
 
 #   publish-pypi:
 #     needs: upload-codecov

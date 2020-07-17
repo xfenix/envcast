@@ -12,6 +12,7 @@ mypy = "*"
 pylint = "*"
 faker = "*"
 flit = "*"
+pytest-xdist = "*"
 
 [requires]
 python_version = "3"
