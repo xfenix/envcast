@@ -20,9 +20,10 @@ Usage examples
 ### API
 Signature of env and dotenv absolutely similar and looks like this:
 ```python
-# LISTING_CASTING_FN applies if CASTING_FN is list, tuple
+# var_name is desired variable name
 # default_value going through type casting, so it must be in desired type
-# default value for CASTING_FN is str
+# type_cast — desired variable type casting function
+# list_type_cast applies if type_cast is list, tuple
 envcast.env(var_name: str, default_value: typing.Any = None, type_cast: type = str, list_type_cast: type = str)
 ```
 
