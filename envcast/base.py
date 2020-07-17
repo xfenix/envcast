@@ -16,7 +16,7 @@ class GenericEnvironmentProcessor:
     """Main class for the app.
     """
 
-    BOOLEAN_VALUES: tuple[str] = ("1", "y", "yes", "true", "ok", "on")
+    BOOLEAN_VALUES: tuple[str] = ("1", "y", "yes", "true", "ok", "okay", "on", "enabled")
 
     @abc.abstractmethod
     def provide_data(self, var_name: str) -> typing.Any:
@@ -25,6 +25,8 @@ class GenericEnvironmentProcessor:
     def cast_value_to_exact_type(self, type_cast: type, value: str) -> typing.Any:
         """Wrapper for type casting.
         """
+        if not value:
+            return None
         if type_cast == bool:
             return value.lower().strip() in self.BOOLEAN_VALUES
         else:
@@ -35,6 +37,7 @@ class GenericEnvironmentProcessor:
     ) -> typing.Any:
         """Main function.
         """
+        # prepared result value
         result_value: typing.Any
         try:
             result_value = self.provide_data(var_name)
@@ -42,13 +45,17 @@ class GenericEnvironmentProcessor:
                 result_value = default_value
         except TypeError:
             result_value = default_value
-        if type_cast in [list, tuple]:
+        # no need to cast if already in desired type
+        if type(result_value) == type_cast:
+            return result_value
+        # casting itself
+        if type_cast in {list, tuple}:
             array_values: list = []
             for one_item in result_value.split("," if "," in result_value else " "):
                 array_values.append(self.cast_value_to_exact_type(list_type_cast, one_item))
             return array_values if type_cast == list else tuple(array_values)
         else:
-            return self.cast_value_to_exact_type(type_cast, result_value) if result_value else None
+            return self.cast_value_to_exact_type(type_cast, result_value)
 
 
 class OSGetEnvProcessor(GenericEnvironmentProcessor):

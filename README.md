@@ -1,4 +1,4 @@
-Envcast
+envcast
 ===
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
@@ -16,6 +16,15 @@ Written in modern python 3.7+ with full support of:
 
 Usage examples
 ===
+
+### API
+Signature of env and dotenv absolutely similar and looks like this:
+```python
+# LISTING_CASTING_FN applies if CASTING_FN is list, tuple
+# default_value going through type casting, so it must be in desired type
+# default value for CASTING_FN is str
+envcast.env(var_name: str, default_value: typing.Any = None, type_cast: type = str, list_type_cast: type = str)
+```
 
 ### From environment variables
 For casting good old plain env variables you will need do following:
