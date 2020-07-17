@@ -10,7 +10,7 @@ from unittest import mock
 import pytest
 import faker
 
-import envget
+import envcast
 
 
 FAKE_GEN: faker.Faker = faker.Faker()
@@ -32,10 +32,10 @@ def test_parse_osgetenv_good_and_bad(monkeypatch, desired_type, key_exists) -> N
     env_key: str = f"DEBUGME_KOKOK_PRIVET_{FAKE_GEN.pystr()}"
     original_value: typing.Any = FAKE_TYPES_MAP[desired_type]()
     monkeypatch.setenv(env_key, str(original_value))
-    tested_value: typing.Any = envget.env(env_key if key_exists else FAKE_GEN.pystr(), type_cast=desired_type)
+    tested_value: typing.Any = envcast.env(env_key if key_exists else FAKE_GEN.pystr(), type_cast=desired_type)
     if key_exists:
         if desired_type == bool:
-            assert tested_value == bool(original_value.lower().strip() in envget.env.BOOLEAN_VALUES)
+            assert tested_value == bool(original_value.lower().strip() in envcast.env.BOOLEAN_VALUES)
         else:
             assert tested_value == original_value
     else:
@@ -49,12 +49,12 @@ def test_parse_dotenv_good_and_bad(monkeypatch, desired_type, key_exists) -> Non
     """
     env_key: str = f"TEST_KEY_{FAKE_GEN.pystr()}"
     original_value: typing.Any = FAKE_TYPES_MAP[desired_type]()
-    monkeypatch.setattr("pathlib.Path.read_text", mock.Mock(return_value=f"{env_key} = {original_value}\n"))
+    monkeypatch.setattr("pathlib.Path.read_text", mock.Mock(return_value=f" {env_key} =  {original_value}\n"))
     monkeypatch.setattr("pathlib.Path.exists", lambda x: True)
     monkeypatch.setattr("pathlib.Path.is_file", lambda x: True)
-    envget.dotenv.set_dotenv_path(".")
-    tested_value: typing.Any = envget.dotenv(env_key, type_cast=desired_type)
+    envcast.dotenv.set_dotenv_path(".")
+    tested_value: typing.Any = envcast.dotenv(env_key, type_cast=desired_type)
     if desired_type == bool:
-        assert tested_value == bool(original_value.lower().strip() in envget.dotenv.BOOLEAN_VALUES)
+        assert tested_value == bool(original_value.lower().strip() in envcast.dotenv.BOOLEAN_VALUES)
     else:
         assert tested_value == original_value

@@ -16,10 +16,7 @@ class GenericEnvironmentProcessor:
     """Main class for the app.
     """
 
-    DOTENV_FILE_NAME: str = ".env"
     BOOLEAN_VALUES: tuple[str] = ("1", "y", "yes", "true", "ok", "on")
-    DATA_PROVIDERS: dict
-    PATH_FOR_DOTENV: pathlib.Path
 
     @abc.abstractmethod
     def provide_data(self, var_name: str) -> typing.Any:
@@ -49,7 +46,7 @@ class GenericEnvironmentProcessor:
             array_values: list = []
             for one_item in result_value.split("," if "," in result_value else " "):
                 array_values.append(self.cast_value_to_exact_type(list_type_cast, one_item))
-            return array_values
+            return array_values if type_cast == list else tuple(array_values)
         else:
             return self.cast_value_to_exact_type(type_cast, result_value) if result_value else None
 
@@ -68,6 +65,9 @@ class DotEnvProcessor(GenericEnvironmentProcessor):
     """Provider realise parsing from .env file.
     """
 
+    DOTENV_FILE_NAME: str = ".env"
+    PATH_FOR_DOTENV: pathlib.Path
+
     def set_dotenv_path(self, full_path: typing.Union[str, pathlib.Path]) -> DotEnvProcessor:
         """Dotenv path helper.
         """
@@ -77,7 +77,6 @@ class DotEnvProcessor(GenericEnvironmentProcessor):
         if not self.PATH_FOR_DOTENV.is_file() or not self.PATH_FOR_DOTENV.exists():
             raise exceptions.IncorrectDotenvPath(str(self.PATH_FOR_DOTENV))
         self.PATH_FOR_DOTENV = pathlib.Path(full_path).resolve()
-        return self
 
     @functools.lru_cache(maxsize=None)
     def _load_dotenv_file(self) -> dict:
@@ -86,12 +85,14 @@ class DotEnvProcessor(GenericEnvironmentProcessor):
         data_provider: dict = {}
         try:
             statements: list = self.PATH_FOR_DOTENV.read_text().strip().split("\n")
-        except NameError:
-            raise exceptions.NotSettedDotenvPath()
-        for one_row in statements:
+        except FileNotFoundError as exc:
+            raise exceptions.IncorrectDotenvPath(exc)
+        for one_row in self.PATH_FOR_DOTENV.read_text().strip().split("\n"):
             if not one_row:
                 continue
             exp_parts: list = one_row.split("=")
+            if len(exp_parts) != 2:
+                raise exceptions.BrokenDotenvStructure(one_row)
             data_provider[exp_parts[0].replace("export", "").strip()] = exp_parts[1]
         return data_provider
 
@@ -101,5 +102,5 @@ class DotEnvProcessor(GenericEnvironmentProcessor):
         return self._load_dotenv_file().get(var_name)
 
 
-env: typing.Callable = OSGetEnvProcessor()
-dotenv: typing.Callable = DotEnvProcessor()
+env: OSGetEnvProcessor = OSGetEnvProcessor()
+dotenv: DotEnvProcessor = DotEnvProcessor()

@@ -1,4 +1,4 @@
-Envget
+Envcast
 ===
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
@@ -17,22 +17,22 @@ Usage examples
 ===
 For casting good old plain env variables you will need do following:
 ```python
-import envget
+import envcast
 
 
-this_will_be_bool: bool = envget.env('SOME_ENV_VARIABLE', 'false', cast=bool))
-or_this_is_string_by_default: str = envget.env('OTHER_ENV_VAR')
-this_is_int: int = envget.env('MORE_ENV', cast=int)
+this_will_be_bool: bool = envcast.env('SOME_ENV_VARIABLE', 'false', cast=bool))
+or_this_is_string_by_default: str = envcast.env('OTHER_ENV_VAR')
+this_is_int: int = envcast.env('MORE_ENV', cast=int)
 ```
 
 
 If your are using .env file, you can do it too:
 ```python
-import envget
+import envcast
 
 
-this_will_be_bool: bool = envget.dotenv('SOME_ENV_VARIABLE', 'false', cast=bool))
-or_this_is_string_by_default: str = envget.dotenv('OTHER_ENV_VAR')
-this_is_int: int = envget.dotenv('MORE_ENV', cast=int)
+this_will_be_bool: bool = envcast.dotenv('SOME_ENV_VARIABLE', 'false', cast=bool))
+or_this_is_string_by_default: str = envcast.dotenv('OTHER_ENV_VAR')
+this_is_int: int = envcast.dotenv('MORE_ENV', cast=int)
 ```
 Dont worry, file will be readed and parsed only once.

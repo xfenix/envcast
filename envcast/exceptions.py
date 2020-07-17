@@ -14,3 +14,10 @@ class NotSettedDotenvPath(Exception):
     """
 
     pass
+
+
+class BrokenDotenvStructure(Exception):
+    """If .env has broken structure.
+    """
+
+    pass
