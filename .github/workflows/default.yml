@@ -26,10 +26,10 @@ jobs:
         pipenv install
     - name: Install package and check installation process is ok
       run: |
-        pipenv run flit install
+        pipenv run flit install 
     - name: Run tests
       run: |
-        pipenv run pytest -n2 evnget --cov=./ --cov-report=xml
+        pipenv run pytest -n2 envcast --cov=./ --cov-report=xml
     - name: Upload code coverage to be accessed in next job
       uses: actions/upload-artifact@v2
       with:
