@@ -13,6 +13,7 @@ Written in modern python 3.7+ with full support of:
 * https://www.python.org/dev/peps/pep-0518/
 * https://www.python.org/dev/peps/pep-0585/
 
+
 Usage examples
 ===
 For casting good old plain env variables you will need do following:
@@ -20,9 +21,9 @@ For casting good old plain env variables you will need do following:
 import envcast
 
 
-this_will_be_bool: bool = envcast.env('SOME_ENV_VARIABLE', 'false', cast=bool))
+this_will_be_bool: bool = envcast.env('SOME_ENV_VARIABLE', 'false', type_cast=bool))
 or_this_is_string_by_default: str = envcast.env('OTHER_ENV_VAR')
-this_is_int: int = envcast.env('MORE_ENV', cast=int)
+this_is_int: int = envcast.env('MORE_ENV', type_cast=int)
 ```
 
 
@@ -31,8 +32,13 @@ If your are using .env file, you can do it too:
 import envcast
 
 
-this_will_be_bool: bool = envcast.dotenv('SOME_ENV_VARIABLE', 'false', cast=bool))
+envcast.set_dotenv_path('.')
+# Can be any of the following :
+# envcast.set_dotenv_path('~/some/.env')
+# envcast.set_dotenv_path('/tmp/.env')
+# envcast.set_dotenv_path('/tmp/')
+this_will_be_bool: bool = envcast.dotenv('SOME_ENV_VARIABLE', 'false', type_cast=bool))
 or_this_is_string_by_default: str = envcast.dotenv('OTHER_ENV_VAR')
-this_is_int: int = envcast.dotenv('MORE_ENV', cast=int)
+this_is_int: int = envcast.dotenv('MORE_ENV', type_cast=int)
 ```
 Dont worry, file will be readed and parsed only once.
