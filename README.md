@@ -1,5 +1,7 @@
 envcast
 ===
+![Build and publish](https://github.com/xfenix/envcast/workflows/Build%20and%20publish/badge.svg)
+[![codecov](https://codecov.io/gh/xfenix/envcast/branch/master/graph/badge.svg)](https://codecov.io/gh/xfenix/envcast)
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
 Python package for environment parsing + type casting. Why do you need it? Because you cand just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings False, "", 0 to bool without boilerplaite?).  
