@@ -100,7 +100,7 @@ class DotEnvProcessor(GenericEnvironmentProcessor):
             exp_parts: list = one_row.split("=")
             if len(exp_parts) != 2:
                 raise exceptions.BrokenDotenvStructure(one_row)
-            data_provider[exp_parts[0].replace("export", "").strip()] = exp_parts[1]
+            data_provider[exp_parts[0].replace("export", "").strip()] = exp_parts[1].strip()
         return data_provider
 
     def provide_data(self, var_name: str) -> typing.Any:

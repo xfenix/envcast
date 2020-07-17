@@ -1,16 +1,18 @@
 """All tests gathers here.
 """
 from __future__ import annotations
-import decimal
-import pathlib
 import typing
 import random
+import decimal
+import pathlib
+import importlib
 from unittest import mock
 
 import pytest
 import faker
 
 import envcast
+import envcast.base
 
 
 FAKE_GEN: faker.Faker = faker.Faker()
@@ -47,13 +49,14 @@ def test_parse_osgetenv_good_and_bad(monkeypatch, desired_type, key_exists) -> N
 def test_parse_dotenv_good_and_bad(monkeypatch, desired_type, key_exists) -> None:
     """Test for os.getenv provider.
     """
+    dotenv_fn: envcast.base.DotEnvProcessor = envcast.base.DotEnvProcessor()
     env_key: str = f"TEST_KEY_{FAKE_GEN.pystr()}"
     original_value: typing.Any = FAKE_TYPES_MAP[desired_type]()
     monkeypatch.setattr("pathlib.Path.read_text", mock.Mock(return_value=f" {env_key} =  {original_value}\n"))
     monkeypatch.setattr("pathlib.Path.exists", lambda x: True)
     monkeypatch.setattr("pathlib.Path.is_file", lambda x: True)
-    envcast.dotenv.set_dotenv_path(".")
-    tested_value: typing.Any = envcast.dotenv(env_key, type_cast=desired_type)
+    dotenv_fn.set_dotenv_path(".")
+    tested_value: typing.Any = dotenv_fn(env_key, type_cast=desired_type)
     if desired_type == bool:
         assert tested_value == bool(original_value.lower().strip() in envcast.dotenv.BOOLEAN_VALUES)
     else:

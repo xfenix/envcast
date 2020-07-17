@@ -2,7 +2,7 @@ envcast
 ===
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
-Python package for environment parsing + type casting. Why do you need it? Because you cand just grab environment variables as is, you need to cast them to desired types for your application (for exmplae like bool variable: how to cast strings False, "", 0 to bool without boilerplaite?).  
+Python package for environment parsing + type casting. Why do you need it? Because you cand just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings False, "", 0 to bool without boilerplaite?).  
 This packages just cast needed environment variables to desired types.
 
 Written in modern python 3.7+ with full support of:
