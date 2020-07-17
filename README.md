@@ -16,6 +16,8 @@ Written in modern python 3.7+ with full support of:
 
 Usage examples
 ===
+
+### From environment variables
 For casting good old plain env variables you will need do following:
 ```python
 import envcast
@@ -27,6 +29,7 @@ this_is_int: int = envcast.env('MORE_ENV', type_cast=int)
 ```
 
 
+### From .env file
 If your are using .env file, you can do it too:
 ```python
 import envcast
