@@ -13,7 +13,7 @@ pylint = "*"
 faker = "*"
 flit = "*"
 pytest-xdist = "*"
-importlib-resources = {version = "*", markers = "python_version < '3.7'"}
+importlib-metadata = "*"
 
 [requires]
 python_version = "3"
