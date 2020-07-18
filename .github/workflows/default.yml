@@ -20,12 +20,13 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Pylint check
-      uses: cclauss/GitHub-Action-for-pylint@0.7.0
     - name: Prepare environment
       run: |
         pip install pipenv
         pipenv install
+    - name: Check code base via pylint
+      run: |
+        pylint-fail-under --fail_under 10.0 **/*.py 
     - name: Install package and check installation process is ok
       run: |
         pipenv run flit install 

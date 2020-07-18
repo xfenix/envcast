@@ -14,6 +14,7 @@ faker = "*"
 flit = "*"
 pytest-xdist = "*"
 importlib-metadata = "*"
+pylint-fail-under = "*"
 
 [requires]
 python_version = "3"
