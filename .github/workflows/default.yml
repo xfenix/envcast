@@ -26,7 +26,7 @@ jobs:
         pipenv install
     - name: Check code base via pylint
       run: |
-        pylint-fail-under --fail_under 10.0 **/*.py 
+        pipenv run pylint-fail-under --fail_under 10.0 **/*.py 
     - name: Install package and check installation process is ok
       run: |
         pipenv run flit install 
