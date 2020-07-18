@@ -5,7 +5,6 @@ import typing
 import random
 import decimal
 import pathlib
-import importlib
 from unittest import mock
 
 import pytest
@@ -17,12 +16,14 @@ import envcast.base
 
 FAKE_GEN: faker.Faker = faker.Faker()
 FAKE_TYPES_MAP: dict = {
-    str: lambda: FAKE_GEN.pystr(),
-    int: lambda: FAKE_GEN.pyint(),
-    float: lambda: FAKE_GEN.pyfloat(),
-    bool: lambda: random.choice(("1", "yEs", "oK", "True", "On", "oK  ", "false", "False", "NO", "Fake")),
-    decimal.Decimal: lambda: FAKE_GEN.pydecimal(),
-    pathlib.Path: lambda: pathlib.Path(FAKE_GEN.file_path()),
+    str: lambda: FAKE_GEN.pystr(),  # pylint: disable=W0108
+    int: lambda: FAKE_GEN.pyint(),  # pylint: disable=W0108
+    float: lambda: FAKE_GEN.pyfloat(),  # pylint: disable=W0108
+    bool: lambda: random.choice(
+        ("1", "yEs", "oK", "True", "On", "oK  ", "false", "False", "NO", "Fake")
+    ),  # pylint: disable=W0108
+    decimal.Decimal: lambda: FAKE_GEN.pydecimal(),  # pylint: disable=W0108
+    pathlib.Path: lambda: pathlib.Path(FAKE_GEN.file_path()),  # pylint: disable=W0108
 }
 
 
@@ -52,12 +53,17 @@ def test_parse_dotenv_good_and_bad(monkeypatch, desired_type, key_exists) -> Non
     dotenv_fn: envcast.base.DotEnvProcessor = envcast.base.DotEnvProcessor()
     env_key: str = f"TEST_KEY_{FAKE_GEN.pystr()}"
     original_value: typing.Any = FAKE_TYPES_MAP[desired_type]()
-    monkeypatch.setattr("pathlib.Path.read_text", mock.Mock(return_value=f" {env_key} =  {original_value}\n"))
+    monkeypatch.setattr(
+        "pathlib.Path.read_text", mock.Mock(return_value=f" {env_key} =  {original_value}\n" if key_exists else "")
+    )
     monkeypatch.setattr("pathlib.Path.exists", lambda x: True)
     monkeypatch.setattr("pathlib.Path.is_file", lambda x: True)
     dotenv_fn.set_dotenv_path(".")
     tested_value: typing.Any = dotenv_fn(env_key, type_cast=desired_type)
-    if desired_type == bool:
-        assert tested_value == bool(original_value.lower().strip() in envcast.dotenv.BOOLEAN_VALUES)
+    if key_exists:
+        if desired_type == bool:
+            assert tested_value == bool(original_value.lower().strip() in envcast.dotenv.BOOLEAN_VALUES)
+        else:
+            assert tested_value == original_value
     else:
-        assert tested_value == original_value
+        assert tested_value is None
