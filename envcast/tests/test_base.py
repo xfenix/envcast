@@ -16,7 +16,7 @@ import envcast.base
 
 FAKE_GEN: faker.Faker = faker.Faker()
 FAKE_TYPES_MAP: dict = {
-    str: lambda: FAKE_GEN.pystr(),
+    str: lambda: FAKE_GEN.pystr(),  # pylint: disable=W0108
     int: lambda: FAKE_GEN.pyint(),  # pylint: disable=W0108
     float: lambda: FAKE_GEN.pyfloat(),  # pylint: disable=W0108
     bool: lambda: random.choice(
