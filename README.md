@@ -57,6 +57,13 @@ this_is_int: int = envcast.dotenv('MORE_ENV', type_cast=int)
 Dont worry, file will be readed and parsed only once.
 
 
+### Exceptions
+* envcast.exceptions.IncorrectDotenvPath
+* envcast.exceptions.NotSettedDotenvPath
+* envcast.exceptions.BrokenDotenvStructure
+
+
+
 Changelog
 ===
 You can check https://github.com/xfenix/envcast/releases/ release page.
