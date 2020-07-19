@@ -1,7 +1,6 @@
 envcast
 ===
 ![Build and publish](https://github.com/xfenix/envcast/workflows/Build%20and%20publish/badge.svg)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e87b69daac6b4405a84844b5a4336dd6)](https://app.codacy.com/manual/xfenix/envcast?utm_source=github.com&utm_medium=referral&utm_content=xfenix/envcast&utm_campaign=Badge_Grade_Dashboard)
 [![codecov](https://codecov.io/gh/xfenix/envcast/branch/master/graph/badge.svg)](https://codecov.io/gh/xfenix/envcast)
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
