@@ -4,9 +4,9 @@ envcast
 [![codecov](https://codecov.io/gh/xfenix/envcast/branch/master/graph/badge.svg)](https://codecov.io/gh/xfenix/envcast)
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
-Python package for environment parsing + type casting. Why do you need it? Because you cand just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings False, "", 0 to bool without boilerplaite?).  
-This packages just cast needed environment variables to desired types.
-
+Python package for environment parsing + type casting. Why do you need it? Because you cand just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings `False`, `""`, `0` to bool without boilerplaite?).  
+This packages just cast needed environment variables to desired types with syntax very similar to `os.getenv` users.  
+Plus this package has good test coverage and quality codebase.  
 Written in modern python 3.7+ with full support of:
 * https://www.python.org/dev/peps/pep-0526/
 * https://www.python.org/dev/peps/pep-0484/
@@ -16,7 +16,7 @@ Written in modern python 3.7+ with full support of:
 * https://www.python.org/dev/peps/pep-0585/
 
 
-Usage examples
+Usage
 ===
 ### API
 Signature of env and dotenv absolutely similar and looks like this:
@@ -62,6 +62,21 @@ Dont worry, file will be readed and parsed only once.
 * envcast.exceptions.NotSettedDotenvPath
 * envcast.exceptions.BrokenDotenvStructure
 
+
+### Supported casting types
+You can pass to `type_cast` or `list_type_cast` any desired type casting callables.
+It may be any builtin type, of Decimal, Path, or any other callable.
+
+
+### Listing values
+If you want to parse and cast environment variable with list of values:
+```
+MY_FANCY_VAR=True, On, Ok, False, Disabled, 0
+```
+You will need expression like this:
+```
+envcast.env('MY_FANCY_VAR', type_cast=bool, list_type_cast=list)
+```
 
 
 Changelog
