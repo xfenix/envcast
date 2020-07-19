@@ -46,15 +46,19 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: coverage.xml
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1.0.7
+    - uses: coverallsapp/github-action@v1.1.1
+      name: Coveralls GitHub Action
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
-        flags: unittests
-        env_vars: OS, PYTHON
-        name: codecov-umbrella
-        fail_ci_if_error: true
+        github-token: ${{ secrets.COVERALLS_TOKEN }}
+    # - name: Upload coverage to Codecov
+    #   uses: codecov/codecov-action@v1.0.7
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     file: ./coverage.xml
+    #     flags: unittests
+    #     env_vars: OS, PYTHON
+    #     name: codecov-umbrella
+    #     fail_ci_if_error: true
 
 #   publish-pypi:
 #     needs: upload-codecov
