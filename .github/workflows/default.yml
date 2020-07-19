@@ -49,7 +49,6 @@ jobs:
       name: Upload coverage to Codecov
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
         fail_ci_if_error: true
 
     # - uses: actions/checkout@master
