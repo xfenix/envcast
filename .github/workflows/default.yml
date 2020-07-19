@@ -36,7 +36,7 @@ jobs:
     - name: Upload code coverage to be accessed in next job
       uses: actions/upload-artifact@v2
       with:
-        name: coverage.xml
+        name: coverage
         path: ./coverage.xml
 
   upload-codecov:
