@@ -47,12 +47,14 @@ class GenericEnvironmentProcessor:
         # no need to cast if already in desired type
         if isinstance(result_value, type_cast):
             return result_value
+        if not result_value:
+            return None
         # casting itself
         if type_cast in {list, tuple}:
             array_values: list = []
             for one_item in result_value.split("," if "," in result_value else " "):
                 array_values.append(self.cast_value_to_exact_type(list_type_cast, one_item))
-            return array_values if type_cast == list else tuple(array_values)
+            return type_cast(array_values)
         return self.cast_value_to_exact_type(type_cast, result_value)
 
 
