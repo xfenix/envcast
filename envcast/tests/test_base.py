@@ -78,8 +78,8 @@ def test_parse_dotenv_good_and_bad(monkeypatch, desired_type, key_exists, broken
 
 
 @pytest.mark.parametrize("desired_type", (tuple, list))
-@pytest.mark.parametrize("desired_sub_type", FAKE_TYPES_MAP.keys())
-@pytest.mark.parametrize("separator", envcast.env.SEPARATORS_FOR_LIST_TYPE)
+@pytest.mark.parametrize("desired_sub_type", tuple(FAKE_TYPES_MAP.keys()))
+@pytest.mark.parametrize("separator", sorted(tuple(envcast.env.SEPARATORS_FOR_LIST_TYPE)))
 def test_list_types(monkeypatch, desired_type, desired_sub_type, separator) -> None:
     """Test with list based variables.
     """
