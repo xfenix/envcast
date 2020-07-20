@@ -1,6 +1,7 @@
 envcast
 ===
 ![Build and publish](https://github.com/xfenix/envcast/workflows/Build%20and%20publish/badge.svg)
+[![PyPI version](https://badge.fury.io/py/envcast.svg)](https://badge.fury.io/py/envcast)
 [![codecov](https://codecov.io/gh/xfenix/envcast/branch/master/graph/badge.svg)](https://codecov.io/gh/xfenix/envcast)
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
