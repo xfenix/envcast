@@ -4,10 +4,14 @@ from __future__ import annotations
 import os
 import abc
 import typing
+import logging
 import pathlib
 import functools
 
 from . import exceptions
+
+
+LOGGER_OBJ: logging.Logger = logging.getLogger(__file__)
 
 
 class GenericEnvironmentProcessor:
@@ -15,6 +19,7 @@ class GenericEnvironmentProcessor:
     """
 
     BOOLEAN_VALUES: tuple[str] = ("1", "y", "yes", "true", "ok", "okay", "on", "enabled")
+    SEPARATORS_FOR_LIST_TYPE: set[str] = {"|", ",", " "}
 
     @abc.abstractmethod
     def provide_data(self, var_name: str) -> typing.Any:
@@ -25,8 +30,6 @@ class GenericEnvironmentProcessor:
     def cast_value_to_exact_type(self, type_cast: type, value: str) -> typing.Any:
         """Wrapper for type casting.
         """
-        if not value:
-            return None
         if type_cast == bool:
             return value.lower().strip() in self.BOOLEAN_VALUES
         return type_cast(value)
@@ -37,25 +40,29 @@ class GenericEnvironmentProcessor:
         """Main function.
         """
         # prepared result value
-        result_value: typing.Any
-        try:
-            result_value = self.provide_data(var_name)
-            if not result_value:
-                result_value = default_value
-        except TypeError:
-            result_value = default_value
-        # no need to cast if already in desired type
-        if isinstance(result_value, type_cast):
-            return result_value
-        if not result_value:
+        prepared_value: typing.Any = self.provide_data(var_name)
+        if not prepared_value:
+            prepared_value = default_value
+        # if already in desired type — return as is
+        if isinstance(prepared_value, type_cast):
+            return prepared_value
+        if not prepared_value:
             return None
-        # casting itself
+        # list casting
         if type_cast in {list, tuple}:
-            array_values: list = []
-            for one_item in result_value.split("," if "," in result_value else " "):
-                array_values.append(self.cast_value_to_exact_type(list_type_cast, one_item))
-            return type_cast(array_values)
-        return self.cast_value_to_exact_type(type_cast, result_value)
+            output_values: list = []
+            prepared_list: list = []
+            for one_separator in self.SEPARATORS_FOR_LIST_TYPE:
+                if one_separator in prepared_value:
+                    prepared_list = prepared_value.split(one_separator)
+                    break
+            if not prepared_list:
+                LOGGER_OBJ.info(f"Separator for {var_name} is not found. Trying to parse value: {prepared_value}")
+            for one_item in prepared_list:
+                output_values.append(self.cast_value_to_exact_type(list_type_cast, one_item))
+            return type_cast(output_values)
+        # plain basic casting
+        return self.cast_value_to_exact_type(type_cast, prepared_value)
 
 
 class OSGetEnvProcessor(GenericEnvironmentProcessor):
