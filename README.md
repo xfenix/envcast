@@ -5,8 +5,8 @@ envcast
 [![codecov](https://codecov.io/gh/xfenix/envcast/branch/master/graph/badge.svg)](https://codecov.io/gh/xfenix/envcast)
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
-Python package for environment parsing + type casting. Why do you need it? Because you cand just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings `False`, `""`, `0` to bool without boilerplaite?).  
-This packages just cast needed environment variables to desired types with syntax very similar to `os.getenv` users.  
+Python package for environment parsing + type casting. Why do you need it? Because you can't just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings `False`, `""`, `0` to bool without boilerplaite?).  
+This packages just cast needed environment variables to desired types with syntax very familiar to `os.getenv` users.  
 Plus this package has good test coverage and quality codebase.  
 Written in modern python 3.7+ with full support of:
 * https://www.python.org/dev/peps/pep-0526/
