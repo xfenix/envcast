@@ -78,7 +78,7 @@ You will need expression like this:
 ```
 envcast.env('MY_FANCY_VAR', type_cast=bool, list_type_cast=list)
 ```
-If you cares about what exactly can be separator for 
+If you cares about what exactly can be separator for list values: it can be `,` or ` ` (space).
 
 
 Changelog
