@@ -1,12 +1,12 @@
 """All logic lie here.
 """
 from __future__ import annotations
-import os
 import abc
-import typing
-import logging
-import pathlib
 import functools
+import logging
+import os
+import pathlib
+import typing
 
 from . import exceptions
 
@@ -32,6 +32,10 @@ class GenericEnvironmentProcessor:
         """
         if type_cast == bool:
             return value.lower().strip() in self.BOOLEAN_VALUES
+        elif type_cast == bytes:
+            return value.encode()
+        elif type_cast == bytearray:
+            return bytearray(value.encode())
         return type_cast(value)
 
     def __call__(
@@ -47,9 +51,12 @@ class GenericEnvironmentProcessor:
         if isinstance(prepared_value, type_cast):
             return prepared_value
         if not prepared_value:
-            return None
+            if type_cast != pathlib.Path:
+                return type_cast()
+            else:
+                return None
         # list casting
-        if type_cast in {list, tuple}:
+        if type_cast in {list, tuple, set, frozenset}:
             output_values: list = []
             prepared_list: list = []
             for one_separator in self.SEPARATORS_FOR_LIST_TYPE:

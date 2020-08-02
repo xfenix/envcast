@@ -4,6 +4,7 @@ envcast
 [![PyPI version](https://badge.fury.io/py/envcast.svg)](https://badge.fury.io/py/envcast)
 [![codecov](https://codecov.io/gh/xfenix/envcast/branch/master/graph/badge.svg)](https://codecov.io/gh/xfenix/envcast)
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+[![Imports: isort](https://img.shields.io/badge/imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://timothycrosley.github.io/isort/)
 
 Python package for environment parsing + type casting. Why do you need it? Because you can't just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings `False`, `""`, `0` to bool without boilerplaite?).  
 This packages just cast needed environment variables to desired types with syntax very familiar to `os.getenv` users.  

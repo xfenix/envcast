@@ -1,14 +1,14 @@
 """All tests gathers here.
 """
 from __future__ import annotations
-import typing
-import random
 import decimal
 import pathlib
+import random
+import typing
 from unittest import mock
 
-import pytest
 import faker
+import pytest
 
 import envcast
 import envcast.base
@@ -16,14 +16,26 @@ import envcast.exceptions
 
 
 FAKE_GEN: faker.Faker = faker.Faker()
+# pylint: disable=W0108
 FAKE_TYPES_MAP: dict = {
-    str: lambda: FAKE_GEN.pystr(),  # pylint: disable=W0108
-    int: lambda: FAKE_GEN.pyint(),  # pylint: disable=W0108
-    float: lambda: FAKE_GEN.pyfloat(),  # pylint: disable=W0108
-    bool: lambda: random.choice(envcast.env.BOOLEAN_VALUES),  # pylint: disable=W0108
-    decimal.Decimal: lambda: FAKE_GEN.pydecimal(),  # pylint: disable=W0108
-    pathlib.Path: lambda: pathlib.Path(FAKE_GEN.file_path()),  # pylint: disable=W0108
+    str: lambda: FAKE_GEN.pystr(),
+    int: lambda: FAKE_GEN.pyint(),
+    float: lambda: FAKE_GEN.pyfloat(),
+    bool: lambda: random.choice(envcast.env.BOOLEAN_VALUES),
+    bytes: lambda: FAKE_GEN.pystr().encode(),
+    complex: lambda: complex(FAKE_GEN.pyint(), FAKE_GEN.pyint()),
+    decimal.Decimal: lambda: FAKE_GEN.pydecimal(),
+    pathlib.Path: lambda: pathlib.Path(FAKE_GEN.file_path()),
 }
+
+
+def cast_to_str(some_value: typing.Any, from_type: typing.Any) -> typing.Any:
+    """Just helper for creating suitable test assets.
+    """
+    if from_type == bytes:
+        return some_value.decode()
+    else:
+        return str(some_value)
 
 
 def generic_assert(tested_value, original_value, key_exists, desired_type):
@@ -35,7 +47,10 @@ def generic_assert(tested_value, original_value, key_exists, desired_type):
         else:
             assert tested_value == original_value
     else:
-        assert tested_value is None
+        if desired_type == pathlib.Path:
+            assert tested_value is None
+        else:
+            assert tested_value == desired_type()
 
 
 @pytest.mark.parametrize("desired_type", FAKE_TYPES_MAP.keys())
@@ -45,7 +60,7 @@ def test_parse_osgetenv_good_and_bad(monkeypatch, desired_type, key_exists) -> N
     """
     env_key: str = f"DEBUGME_KOKOK_PRIVET_{FAKE_GEN.pystr()}"
     original_value: typing.Any = FAKE_TYPES_MAP[desired_type]()
-    monkeypatch.setenv(env_key, str(original_value))
+    monkeypatch.setenv(env_key, cast_to_str(original_value, desired_type))
     generic_assert(
         envcast.env(env_key if key_exists else FAKE_GEN.pystr(), type_cast=desired_type),
         original_value,
@@ -66,7 +81,11 @@ def test_parse_dotenv_good_and_bad(monkeypatch, desired_type, key_exists, broken
     var_separator: str = "HAHA_DEBUGME-fail:(" if broken_equal_sign else "="
     monkeypatch.setattr(
         "pathlib.Path.read_text",
-        mock.Mock(return_value=f" {env_key} {var_separator}  {original_value}\n" if key_exists else ""),
+        mock.Mock(
+            return_value=f" {env_key} {var_separator}  {cast_to_str(original_value, desired_type)}\n"
+            if key_exists
+            else ""
+        ),
     )
     monkeypatch.setattr("pathlib.Path.exists", lambda x: True)
     monkeypatch.setattr("pathlib.Path.is_file", lambda x: True)
@@ -77,7 +96,7 @@ def test_parse_dotenv_good_and_bad(monkeypatch, desired_type, key_exists, broken
         assert broken_equal_sign
 
 
-@pytest.mark.parametrize("desired_type", (tuple, list))
+@pytest.mark.parametrize("desired_type", (tuple, list, set, frozenset))
 @pytest.mark.parametrize("desired_sub_type", tuple(FAKE_TYPES_MAP.keys()))
 @pytest.mark.parametrize("separator", sorted(tuple(envcast.env.SEPARATORS_FOR_LIST_TYPE)))
 def test_list_types(monkeypatch, desired_type, desired_sub_type, separator) -> None:
@@ -85,7 +104,9 @@ def test_list_types(monkeypatch, desired_type, desired_sub_type, separator) -> N
     """
     generated_values: list = desired_type([FAKE_TYPES_MAP[desired_sub_type]() for _ in range(FAKE_GEN.pyint(10, 50))])
     env_key: str = f"HEYPRIVET_KAKDELA_A_{FAKE_GEN.pystr()}"
-    monkeypatch.setenv(env_key, separator.join([str(one_item) for one_item in generated_values]))
+    monkeypatch.setenv(
+        env_key, separator.join([cast_to_str(one_item, desired_sub_type) for one_item in generated_values])
+    )
     tested_value: typing.Any = envcast.env(env_key, type_cast=desired_type, list_type_cast=desired_sub_type)
     if desired_sub_type == bool:
         generated_values = desired_type(
