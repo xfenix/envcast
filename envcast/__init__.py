@@ -3,4 +3,4 @@
 from .base import dotenv, env
 
 
-__version__: str = "1.0.1"
+__version__: str = "1.0.2"
