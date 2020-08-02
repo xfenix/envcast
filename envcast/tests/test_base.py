@@ -34,8 +34,7 @@ def cast_to_str(some_value: typing.Any, from_type: typing.Any) -> typing.Any:
     """
     if from_type == bytes:
         return some_value.decode()
-    else:
-        return str(some_value)
+    return str(some_value)
 
 
 def generic_assert(tested_value, original_value, key_exists, desired_type):

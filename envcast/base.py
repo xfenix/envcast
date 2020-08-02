@@ -30,6 +30,7 @@ class GenericEnvironmentProcessor:
     def cast_value_to_exact_type(self, type_cast: type, value: str) -> typing.Any:
         """Wrapper for type casting.
         """
+        # pylint: disable=no-else-return
         if type_cast == bool:
             return value.lower().strip() in self.BOOLEAN_VALUES
         elif type_cast == bytes:
@@ -53,8 +54,7 @@ class GenericEnvironmentProcessor:
         if not prepared_value:
             if type_cast != pathlib.Path:
                 return type_cast()
-            else:
-                return None
+            return None
         # list casting
         if type_cast in {list, tuple, set, frozenset}:
             output_values: list = []
