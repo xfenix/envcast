@@ -18,9 +18,24 @@ Written in modern python 3.7+ with full support of:
 * https://www.python.org/dev/peps/pep-0585/
 
 
-Usage
+TL;DR
 ===
-### API
+It behaves very similar like `os.getenv`:
+```python
+import envcast
+
+
+# result will be casted to str
+envcast.env('SOME_ENV_VAR', 'defaultvalue', type_cast=str)
+
+# result will be casted to bool (if it like 1 or on or true/True -> if will be python True)
+# BUT, if there is no value, default value is None will be casted to bool, so it will be False
+envcast.env('SOME_BOOL_ENV_VAR', type_cast=bool)
+```
+
+
+Usage, API, more details and examples
+===
 Signature of env and dotenv absolutely similar and looks like this:
 ```python
 # var_name is desired variable name
