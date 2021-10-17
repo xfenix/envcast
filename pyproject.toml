@@ -35,3 +35,12 @@ known_local_folder = ["envcast",]
 
 [tool.black]
 line-length = 120
+
+[tool.pytest.ini_options]
+addopts = "--cov . --cov-report term-missing"
+
+[tool.pylint.format]
+max-line-length=120
+
+[tool.pylint.messages_control]
+disable=["logging-fstring-interpolation"]
