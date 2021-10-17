@@ -32,3 +32,6 @@ sections = ["FUTURE", "STDLIB", "FIRSTPARTY", "THIRDPARTY", "LOCALFOLDER"]
 no_lines_before = ["STDLIB", "THIRDPARTY"]
 known_third_party = []
 known_local_folder = ["envcast",]
+
+[tool.black]
+line-length = 120
