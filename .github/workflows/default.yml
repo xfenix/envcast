@@ -3,71 +3,71 @@ name: Build and publish
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   run-tests-and-coverage:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9, 3.10]
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Prepare environment
-      run: |
-        pip install pipenv
-        pipenv install
-    - name: Check code base via pylint
-      run: |
-        pipenv run pylint-fail-under --fail_under 10.0 **/*.py 
-    - name: Install package and check installation process is ok
-      run: |
-        pipenv run flit install 
-    - name: Run tests
-      run: |
-        pipenv run pytest -n2 ./ --cov=./ --cov-report=xml
-    - name: Upload code coverage to be accessed in next job
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage
-        path: ./coverage.xml
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          pip install pipenv
+          pipenv install
+      - name: Check code base via pylint
+        run: |
+          pipenv run pylint-fail-under --fail_under 10.0 **/*.py
+      - name: Install package and check installation process is ok
+        run: |
+          pipenv run flit install
+      - name: Run tests
+        run: |
+          pipenv run pytest -n2 ./ --cov=./ --cov-report=xml
+      - name: Upload code coverage to be accessed in next job
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: ./coverage.xml
 
   # TIP FOR FUTURE: canonical layout! checkout, unpack is strictly necessary in steps section!111
   upload-codecov:
     runs-on: ubuntu-latest
     needs: run-tests-and-coverage
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/download-artifact@v2
-      with:
-        name: coverage
-    - uses: codecov/codecov-action@v1.0.7
-      name: Upload coverage to Codecov
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@v2
+        with:
+          name: coverage
+      - uses: codecov/codecov-action@v1.0.7
+        name: Upload coverage to Codecov
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
 
   publish-pypi:
     needs: upload-codecov
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Publish package
-      env:
-        FLIT_USERNAME: ${{ secrets.FLIT_USERNAME }}
-        FLIT_PASSWORD: ${{ secrets.FLIT_PASSWORD }}
-      continue-on-error: true
-      run: |
-        pip install pipenv
-        pipenv install
-        pipenv run flit publish
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Publish package
+        env:
+          FLIT_USERNAME: ${{ secrets.FLIT_USERNAME }}
+          FLIT_PASSWORD: ${{ secrets.FLIT_PASSWORD }}
+        continue-on-error: true
+        run: |
+          pip install pipenv
+          pipenv install
+          pipenv run flit publish
