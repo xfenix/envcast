@@ -66,4 +66,4 @@ jobs:
         continue-on-error: true
         run: |
           pip install poetry
-          poetry build --publish -u ${{ secrets.FLIT_USERNAME }} -p ${{ secrets.FLIT_PASSWORD }}
+          poetry publish --build -u ${{ secrets.FLIT_USERNAME }} -p ${{ secrets.FLIT_PASSWORD }}
