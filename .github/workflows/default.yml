@@ -25,7 +25,7 @@ jobs:
           poetry install
       - name: Check code base via pylint
         run: |
-          poetry run pylint-fail-under --fail_under 10.0 **/*.py
+          poetry run pylint --fail-under 10.0 **/*.py
       - name: Build package and check installation process is ok
         run: |
           poetry build

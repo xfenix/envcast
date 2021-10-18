@@ -20,14 +20,13 @@ classifiers = [
 "Documentation" = "https://github.com/xfenix/envcast#envcast"
 
 [tool.poetry.dependencies]
-pytest = "*"
-pytest-cov = "*"
-mypy = "*"
-pylint = "*"
-faker = "*"
-pytest-xdist = "*"
-importlib-metadata = "*"
-pylint-fail-under = "*"
+python = "^3.7"
+pylint = "^2.11.1"
+pytest = "^6.2.5"
+pytest-xdist = "^2.4.0"
+mypy = "^0.910"
+Faker = "^9.3.1"
+pytest-cov = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
