@@ -21,17 +21,17 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Prepare environment
         run: |
-          pip install pipenv
-          pipenv install
+          pip install poetry
+          poetry install
       - name: Check code base via pylint
         run: |
-          pipenv run pylint-fail-under --fail_under 10.0 **/*.py
-      - name: Install package and check installation process is ok
+          poetry run pylint-fail-under --fail_under 10.0 **/*.py
+      - name: Build package and check installation process is ok
         run: |
-          pipenv run flit install
+          poetry build
       - name: Run tests
         run: |
-          pipenv run pytest -n2 ./ --cov=./ --cov-report=xml
+          poetry pytest -n2 ./ --cov=./ --cov-report=xml
       - name: Upload code coverage to be accessed in next job
         uses: actions/upload-artifact@v2
         with:
@@ -63,11 +63,7 @@ jobs:
         with:
           python-version: 3.9
       - name: Publish package
-        env:
-          FLIT_USERNAME: ${{ secrets.FLIT_USERNAME }}
-          FLIT_PASSWORD: ${{ secrets.FLIT_PASSWORD }}
         continue-on-error: true
         run: |
-          pip install pipenv
-          pipenv install
-          pipenv run flit publish
+          pip install poetry
+          poetry build --publish -u ${{ secrets.FLIT_USERNAME }} -p ${{ secrets.FLIT_PASSWORD }}

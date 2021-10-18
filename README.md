@@ -1,5 +1,4 @@
 # envcast
-
 ![Build and publish](https://github.com/xfenix/envcast/workflows/Build%20and%20publish/badge.svg)
 [![PyPI version](https://badge.fury.io/py/envcast.svg)](https://badge.fury.io/py/envcast)
 [![codecov](https://codecov.io/gh/xfenix/envcast/branch/master/graph/badge.svg)](https://codecov.io/gh/xfenix/envcast)
@@ -19,9 +18,7 @@ Written in modern python 3.7+ with full support of:
 - https://www.python.org/dev/peps/pep-0585/
 
 # TL;DR
-
-It behaves very similar like `os.getenv`:
-
+It behaves very similar to `os.getenv`:
 ```python
 import envcast
 
@@ -35,21 +32,18 @@ envcast.env('SOME_BOOL_ENV_VAR', type_cast=bool)
 ```
 
 # Usage, API, more details and examples
-
 Signature of env and dotenv absolutely similar and looks like this:
-
 ```python
 # var_name is desired variable name
 # default_value going through type casting, so it must be in desired type
 # type_cast — desired variable type casting function
 # list_type_cast applies if type_cast is list, tuple
-envcast.env(var_name: str, default_value: typing.Any = None, type_cast: type = str, list_type_cast: type = str)
+envcast.env(var_name: str, default_value: typing.Any = None,
+            type_cast: type = str, list_type_cast: type = str)
 ```
 
 ### From environment variables
-
 For casting good old plain env variables you will need do following:
-
 ```python
 import envcast
 
@@ -60,9 +54,7 @@ this_is_int: int = envcast.env('MORE_ENV', type_cast=int)
 ```
 
 ### From .env file
-
 If your are using .env file, you can do it too:
-
 ```python
 import envcast
 
@@ -76,36 +68,27 @@ this_will_be_bool: bool = envcast.dotenv('SOME_ENV_VARIABLE', 'false', type_cast
 or_this_is_string_by_default: str = envcast.dotenv('OTHER_ENV_VAR')
 this_is_int: int = envcast.dotenv('MORE_ENV', type_cast=int)
 ```
-
 Dont worry, file will be readed and parsed only once.
 
 ### Exceptions
-
 - envcast.exceptions.IncorrectDotenvPath
 - envcast.exceptions.NotSettedDotenvPath
 - envcast.exceptions.BrokenDotenvStructure
 
 ### Supported casting types
-
 You can pass to `type_cast` or `list_type_cast` any desired type casting callables.
 It may be any builtin type, of Decimal, Path, or any other callable.
 
 ### Listing values
-
 If you want to parse and cast environment variable with list of values:
-
 ```
 MY_FANCY_VAR=True, On, Ok, False, Disabled, 0
 ```
-
 You will need expression like this:
-
-```
+```python
 envcast.env('MY_FANCY_VAR', type_cast=bool, list_type_cast=list)
 ```
-
 If you cares about what exactly can be separator for list values: it can be `,`, ` ` (space) or `|`.
 
 # Changelog
-
 You can check https://github.com/xfenix/envcast/releases/ release page.
