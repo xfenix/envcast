@@ -23,9 +23,10 @@ jobs:
         run: |
           pip install poetry
           poetry install
-      - name: Check code base via pylint
+      - name: Run linting
         run: |
           poetry run pylint --fail-under 10.0 **/*.py
+          poetry run mypy .
       - name: Build package and check installation process is ok
         run: |
           poetry build

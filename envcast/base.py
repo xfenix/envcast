@@ -17,7 +17,7 @@ LOGGER_OBJ: logging.Logger = logging.getLogger(__file__)
 class GenericEnvironmentProcessor:
     """Main class for the app."""
 
-    BOOLEAN_VALUES: tuple[str] = ("1", "y", "yes", "true", "ok", "okay", "on", "enabled")
+    BOOLEAN_VALUES: tuple[str, ...] = ("1", "y", "yes", "true", "ok", "okay", "on", "enabled")
     SEPARATORS_FOR_LIST_TYPE: set[str] = {"|", ",", " "}
 
     @abc.abstractmethod
@@ -103,6 +103,7 @@ class DotEnvProcessor(GenericEnvironmentProcessor):
         if not self._path_for_dotenv.is_file() or not self._path_for_dotenv.exists():
             raise exceptions.IncorrectDotenvPath(str(self._path_for_dotenv))
         self._path_for_dotenv = pathlib.Path(full_path).resolve()
+        return self
 
     @functools.lru_cache(maxsize=None)
     def _load_dotenv_file(self) -> dict:
