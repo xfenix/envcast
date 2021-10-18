@@ -1,26 +1,36 @@
-[build-system]
-requires = ["flit_core >=2,<4"]
-build-backend = "flit_core.buildapi"
-
-[tool.flit.metadata]
-dist-name = "envcast"
-module = "envcast"
-author = "Denis Anikin"
-author-email = "ad@xfenix.ru"
-description-file = "README.md"
-requires-python=">=3.7"
-home-page = "https://github.com/xfenix/envcast/"
+[tool.poetry]
+name = "envcast"
+version = "1.1.0"
+authors = ["Denis Anikin <ad@xfenix.ru>"]
+license = "MIT"
+description = "Package for environment typed parsing"
+readme = "README.md"
+homepage = "https://github.com/xfenix/envcast/"
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-[tool.flit.metadata.urls]
-Documentation = "https://github.com/xfenix/envcast#envcast"
+[tool.poetry.urls]
+"Documentation" = "https://github.com/xfenix/envcast#envcast"
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flit.metadata]
+dist-name = "envcast"
+module = "envcast"
 
 [tool.isort]
 line_length = 120
