@@ -1,6 +1,5 @@
 """All logic lie here."""
 from __future__ import annotations
-
 import abc
 import functools
 import logging
@@ -67,9 +66,7 @@ class GenericEnvironmentProcessor:
                     prepared_list = prepared_value.split(one_separator)
                     break
             if not prepared_list:
-                LOGGER_OBJ.info(
-                    f"Separator for {var_name} is not found. Trying to parse value: {prepared_value}"
-                )
+                LOGGER_OBJ.info(f"Separator for {var_name} is not found. Trying to parse value: {prepared_value}")
             for one_item in prepared_list:
                 output_values.append(self.cast_value_to_exact_type(list_type_cast, one_item))
             return type_cast(output_values)
@@ -105,14 +102,12 @@ class DotEnvProcessor(GenericEnvironmentProcessor):
         self._path_for_dotenv = pathlib.Path(full_path).resolve()
         return self
 
-    @functools.lru_cache(maxsize=None)
+    @functools.lru_cache(maxsize=10)
     def _load_dotenv_file(self) -> dict:
         """Small helper for dotenv provider."""
         data_provider: dict = {}
         try:
-            statements: list = (
-                self._path_for_dotenv.read_text(encoding=self._file_encoding).strip().split("\n")
-            )
+            statements: list = self._path_for_dotenv.read_text(encoding=self._file_encoding).strip().split("\n")
         except IsADirectoryError as exc:
             raise exceptions.IncorrectDotenvPath(exc)
         for one_row in statements:
