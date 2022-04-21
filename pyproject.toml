@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "envcast"
-version = "1.1.0"
+version = "1.2.0"
 authors = ["Denis Anikin <ad@xfenix.ru>"]
 license = "MIT"
 description = "This module helps to cast environment variables to desired types. It may be very useful for 12factor app usage."
@@ -21,12 +21,14 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pylint = "^2.11.1"
-pytest = "^6.2.5"
-pytest-xdist = "^2.4.0"
-mypy = "^0.910"
-Faker = "^9.3.1"
-pytest-cov = "^3.0.0"
+
+[tool.poetry.dev-dependencies]
+pylint = "*"
+pytest = "*"
+pytest-xdist = "*"
+mypy = "*"
+Faker = "*"
+pytest-cov = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
