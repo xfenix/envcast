@@ -34,7 +34,7 @@ jobs:
         run: |
           poetry run pytest -n2 ./ --cov=./ --cov-report=xml
       - name: Upload code coverage to be accessed in next job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: ./coverage.xml
@@ -45,7 +45,7 @@ jobs:
     needs: run-tests-and-coverage
     steps:
       - uses: actions/checkout@master
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: coverage
       - uses: codecov/codecov-action@v2
