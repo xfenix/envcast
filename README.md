@@ -8,7 +8,7 @@
 Package for environment variables parsing with type casting. Why do you need it? Because you can't just grab environment variables as is, you need to cast them to desired types for your application (for example like bool variable: how to cast strings `False`, `""`, `0` to bool without boilerplaite?).  
 This packages just cast needed environment variables to desired types with syntax very familiar to `os.getenv` users.  
 Plus this package has good test coverage and quality codebase.  
-Written in modern python 3.7+ with full support of:
+Written in modern python 3.9+ with full support of:
 
 - https://www.python.org/dev/peps/pep-0526/
 - https://www.python.org/dev/peps/pep-0484/
@@ -92,3 +92,18 @@ If you cares about what exactly can be separator for list values: it can be `,`,
 
 # Changelog
 You can check https://github.com/xfenix/envcast/releases/ release page.
+
+## Development
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
+To prepare a development environment run:
+
+```bash
+uv sync
+```
+
+Run the test suite with:
+
+```bash
+uv run pytest
+```
