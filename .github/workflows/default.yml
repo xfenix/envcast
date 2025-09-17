@@ -1,6 +1,9 @@
 # Pytest, pylint, codecov and publish. That's is folks
 name: Build and publish
 
+env:
+  COVERAGE_ARTIFACT_NAME: coverage-${{ github.run_id }}
+
 on:
   push:
     branches: [master]
@@ -34,7 +37,7 @@ jobs:
       - name: Upload code coverage to be accessed in next job
         uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: ${{ env.COVERAGE_ARTIFACT_NAME }}
           path: ./coverage.xml
 
   # TIP FOR FUTURE: canonical layout! checkout, unpack is strictly necessary in steps section!111
@@ -45,7 +48,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: coverage
+          name: ${{ env.COVERAGE_ARTIFACT_NAME }}
       - uses: codecov/codecov-action@v4
         name: Upload coverage to Codecov
         with:
